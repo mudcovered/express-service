@@ -20,7 +20,7 @@ export class NodeServer {
   }
 
   public async initialise(
-    initialiseRoutes: (express: Express) => Promise<void>
+    initialiseRoutes: (_: Express) => Promise<void>
   ): Promise<void> {
     this.server = createServer(this.express);
 
