@@ -8,7 +8,7 @@ export class Validator<T> {
 
   public constructor(typeName: string, schemaPath?: string) {
     const schemaPrefix = schemaPath ? `${schemaPath}/` : '';
-    const schemaJson = readFileSync(`${schemaPrefix}${typeName}`);
+    const schemaJson = readFileSync(`${schemaPrefix}${typeName}.json`);
     const schema = JSON.parse(schemaJson.toString());
 
     this.ajv = new Ajv({
