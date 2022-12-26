@@ -2,6 +2,7 @@ import * as BodyParser from 'body-parser';
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { createServer, Server } from 'http';
 import { errorMiddleware } from './error-middleware';
+import { NotFoundError } from './http-error';
 
 export interface ServerOptions {
   port?: number;
@@ -32,8 +33,8 @@ export class NodeServer {
     });
     await initialiseRoutes(this.express);
 
-    this.express.all('/*', (_: Request, res: Response) => {
-      res.sendStatus(404);
+    this.express.all('/*', (_: Request, _res: Response) => {
+      throw new NotFoundError('Not found');
     });
     this.express.use(errorMiddleware);
   }
