@@ -1,7 +1,7 @@
-import Ajv, { ValidateFunction } from 'ajv';
+import { default as Ajv, ValidateFunction } from 'ajv';
+import { default as addFormats } from 'ajv-formats';
 import { readFileSync } from 'fs';
 import { BadRequestError } from './http-error';
-
 export class Validator<T> {
   private validator: ValidateFunction;
   private ajv: Ajv;
@@ -16,6 +16,9 @@ export class Validator<T> {
       verbose: true,
       coerceTypes: true,
     });
+    // Add extra formats
+    addFormats(this.ajv);
+
     this.validator = this.ajv.compile(schema);
   }
 
