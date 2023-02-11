@@ -4,6 +4,7 @@ module.exports = {
   extends: [
     // Uses the recommended rules from the @typescript-eslint/eslint-plugin
     'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/strict',
     'plugin:security/recommended',
     'eslint:recommended',
   ],

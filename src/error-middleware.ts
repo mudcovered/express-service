@@ -12,7 +12,14 @@ export function errorMiddleware(
     status = err.getStatus();
   }
 
+  if (err.name === 'PayloadTooLargeError') {
+    // Express payload too large.
+    status = 413;
+  }
   console.error(`${req.method} ${status} ${req.path}: ${err.message}`);
+  if (status === 500) {
+    console.debug(err);
+  }
   if (res.headersSent) {
     next(err);
   }
