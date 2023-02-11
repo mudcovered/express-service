@@ -8,6 +8,9 @@ export class Validator<T> {
 
   public constructor(typeName: string, schemaPath?: string) {
     const schemaPrefix = schemaPath ? `${schemaPath}/` : '';
+    // NOTE this should be safe as in normal usage the schema typename
+    // is a constant in the calling code.
+    //eslint-disable-next-line security/detect-non-literal-fs-filename
     const schemaJson = readFileSync(`${schemaPrefix}${typeName}.json`);
     const schema = JSON.parse(schemaJson.toString());
 
