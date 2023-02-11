@@ -3,9 +3,12 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import { createServer, Server } from 'http';
 import { errorMiddleware } from './error-middleware';
 import { NotFoundError } from './http-error';
+import { logMiddleware } from './log-middleware';
 
 export interface ServerOptions {
   port?: number;
+  requestLimit?: string;
+  logRequests?: boolean;
 }
 
 export class NodeServer {
@@ -25,15 +28,33 @@ export class NodeServer {
   ): Promise<void> {
     this.server = createServer(this.express);
 
-    this.express.use(BodyParser.json());
-    this.express.use(BodyParser.urlencoded({ extended: true }));
+    // Security. Don't publicise the fact this is a node express server.
+    this.express.disable('x-powered-by');
+
+    this.express.use(
+      BodyParser.json(
+        this.options.requestLimit ? { limit: this.options.requestLimit } : {}
+      )
+    );
+    this.express.use(
+      BodyParser.urlencoded({
+        extended: true,
+        ...(this.options.requestLimit
+          ? { limit: this.options.requestLimit }
+          : {}),
+      })
+    );
     this.express.use((_req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       next();
     });
+
+    if (this.options.logRequests) {
+      this.express.use(logMiddleware);
+    }
     await initialiseRoutes(this.express);
 
-    this.express.all('/*', (_: Request, _res: Response) => {
+    this.express.all('/*', (_req: Request, _res: Response) => {
       throw new NotFoundError('Not found');
     });
     this.express.use(errorMiddleware);
