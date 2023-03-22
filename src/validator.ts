@@ -3,7 +3,7 @@ import { default as addFormats } from 'ajv-formats';
 import { readFileSync } from 'fs';
 import { BadRequestError } from './http-error';
 export class Validator<T> {
-  private validator: ValidateFunction;
+  private validator: ValidateFunction<T>;
   private ajv: Ajv;
 
   public constructor(typeName: string, schemaPath?: string) {
@@ -22,16 +22,17 @@ export class Validator<T> {
     // Add extra formats
     addFormats(this.ajv);
 
-    this.validator = this.ajv.compile(schema);
+    this.validator = this.ajv.compile<T>(schema);
   }
 
   public validate(data: unknown): T {
     const success = this.validator(data);
     if (!success) {
-      throw new BadRequestError(this.ajv.errorsText(this.validator.errors));
+      throw new BadRequestError('Invalid data in request', {
+        ajvError: this.validator.errors,
+      });
+    } else {
+      return data;
     }
-
-    // Safe conversion validator proves that this is the correct type
-    return data as T;
   }
 }
