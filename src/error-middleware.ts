@@ -27,6 +27,13 @@ export function errorMiddleware(
     res.set('X-Error', err.message);
     res.status(status);
   } else {
-    res.status(status).json({ message: err.message });
+    if (err instanceof HttpError) {
+      res.status(status).json({
+        message: err.message,
+        ...(err.additionalInfo ? { additionalInfo: err.additionalInfo } : {}),
+      });
+    } else {
+      res.status(status).json({ message: err.message });
+    }
   }
 }
