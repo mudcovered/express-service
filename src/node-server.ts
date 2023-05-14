@@ -9,6 +9,9 @@ export interface ServerOptions {
   port?: number;
   requestLimit?: string;
   logRequests?: boolean;
+  jsonBody?: boolean;
+  urlEncodedBody?: boolean;
+  textBody?: boolean;
 }
 
 export class NodeServer {
@@ -31,19 +34,33 @@ export class NodeServer {
     // Security. Don't publicise the fact this is a node express server.
     this.express.disable('x-powered-by');
 
-    this.express.use(
-      BodyParser.json(
-        this.options.requestLimit ? { limit: this.options.requestLimit } : {}
-      )
-    );
-    this.express.use(
-      BodyParser.urlencoded({
-        extended: true,
-        ...(this.options.requestLimit
-          ? { limit: this.options.requestLimit }
-          : {}),
-      })
-    );
+    if (this.options.jsonBody) {
+      this.express.use(
+        BodyParser.json(
+          this.options.requestLimit ? { limit: this.options.requestLimit } : {}
+        )
+      );
+    }
+    if (this.options.urlEncodedBody) {
+      this.express.use(
+        BodyParser.urlencoded({
+          extended: true,
+          ...(this.options.requestLimit
+            ? { limit: this.options.requestLimit }
+            : {}),
+        })
+      );
+    }
+    if (this.options.textBody) {
+      this.express.use(
+        BodyParser.text({
+          ...(this.options.requestLimit
+            ? { limit: this.options.requestLimit }
+            : {}),
+        })
+      );
+    }
+
     this.express.use((_req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Headers', 'Content-Type');
       next();
