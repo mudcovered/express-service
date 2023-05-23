@@ -1,6 +1,6 @@
 {
   "name": "@mudcovered/express-service",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -9,9 +9,14 @@
     "lint": "eslint --ext .ts src",
     "fix": "eslint --fix --ext .ts src"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mudcovered/express-service"
+  },
   "files": [
     "dist/*",
     "LICENSE",
+    "README.md",
     "package.json"
   ],
   "devDependencies": {
