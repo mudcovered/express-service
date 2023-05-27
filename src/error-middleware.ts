@@ -16,9 +16,11 @@ export function errorMiddleware(
     // Express payload too large.
     status = 413;
   }
-  console.error(`${req.method} ${status} ${req.path}: ${err.message}`);
+  res.locals.logger.error(
+    `${req.method} ${status} ${req.path}: ${err.message}`
+  );
   if (status === 500) {
-    console.debug(err);
+    res.locals.logger.debug(err);
   }
   if (res.headersSent) {
     next(err);
