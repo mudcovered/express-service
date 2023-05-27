@@ -5,6 +5,13 @@ import { errorMiddleware } from './error-middleware';
 import { NotFoundError } from './http-error';
 import { logMiddleware } from './log-middleware';
 
+export interface ServerLogger {
+  debug: (data: any, ...args: any[]) => void;
+  error: (data: any, ...args: any[]) => void;
+  info: (data: any, ...args: any[]) => void;
+  warn: (data: any, ...args: any[]) => void;
+}
+
 export interface ServerOptions {
   port?: number;
   requestLimit?: string;
@@ -12,16 +19,22 @@ export interface ServerOptions {
   jsonBody?: boolean;
   urlEncodedBody?: boolean;
   textBody?: boolean;
+  logger?: ServerLogger;
 }
 
 export class NodeServer {
   private express: Express;
   private server?: Server;
-
+  private logger: ServerLogger;
   public constructor(private options: ServerOptions) {
     this.express = express();
     if (!this.options.port) {
       this.options.port = 80;
+    }
+    if (this.options.logger) {
+      this.logger = this.options.logger;
+    } else {
+      this.logger = console;
     }
     this.express.set('port', options.port);
   }
@@ -30,7 +43,10 @@ export class NodeServer {
     initialiseRoutes: (_: Express) => Promise<void>
   ): Promise<void> {
     this.server = createServer(this.express);
-
+    this.express.use((_req: Request, res: Response, next: NextFunction) => {
+      res.locals.logger = this.options.logger ?? console;
+      next();
+    });
     // Security. Don't publicise the fact this is a node express server.
     this.express.disable('x-powered-by');
 
@@ -92,11 +108,13 @@ export class NodeServer {
   private onError(error: any): void {
     switch (error.code) {
       case 'EACCES':
-        console.error(`Port ${this.options.port} requires elevated privileges`);
+        this.logger.error(
+          `Port ${this.options.port} requires elevated privileges`
+        );
         process.exit(1);
       // fallthrough: Actually unreachable
       case 'EADDRINUSE':
-        console.error(`Port ${this.options.port} already in use`);
+        this.logger.error(`Port ${this.options.port} already in use`);
         process.exit(1);
       // fallthrough: Actually unreachable
       default:
@@ -106,6 +124,6 @@ export class NodeServer {
     }
   }
   private onListening(): void {
-    console.info(`Listening on port ${this.options.port}`);
+    this.logger.info(`Listening on port ${this.options.port}`);
   }
 }
