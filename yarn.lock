@@ -546,7 +546,7 @@ eslint-plugin-deprecation@^1.3.2:
     tslib "^2.3.1"
     tsutils "^3.21.0"
 
-"eslint-plugin-import@npm:eslint-plugin-i":
+"eslint-plugin-import@npm:eslint-plugin-i@^2.27.5-4":
   version "2.27.5-4"
   resolved "https://registry.yarnpkg.com/eslint-plugin-i/-/eslint-plugin-i-2.27.5-4.tgz#cbfe16e8660c5f115cd78299f609e2cae846886d"
   integrity sha512-X3Z+dp9nZw7d/y41EDO6JyFw4WVMOT91SFuoJvL0C0/4M1l6NxQ5mLTjXHuYhq0AazW75pAmj25yMk5wPMzjsw==
