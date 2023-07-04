@@ -26,7 +26,7 @@
     "@typescript-eslint/parser": "^5.38.1",
     "eslint": "^8.24.0",
     "eslint-plugin-deprecation": "^1.3.2",
-    "eslint-plugin-import": "npm:eslint-plugin-i",
+    "eslint-plugin-import": "npm:eslint-plugin-i@^2.27.5-4",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-security": "^1.5.0",
     "prettier": "^2.7.1",
