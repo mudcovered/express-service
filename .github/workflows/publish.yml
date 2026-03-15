@@ -20,7 +20,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm build
-      - run: pnpm publish --access public
+      - run: pnpm publish --access public --no-git-checks
   publish-github:
     runs-on: ubuntu-latest
     permissions:
@@ -38,6 +38,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm build
-      - run: pnpm publish
+      - run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
