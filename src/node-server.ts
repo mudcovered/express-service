@@ -18,6 +18,7 @@ export interface ServerOptions {
   requestLimit?: string;
   logRequests?: boolean;
   jsonBody?: boolean;
+  jsonNoStrict?: boolean;
   urlEncodedBody?: boolean;
   textBody?: boolean;
   logger?: ServerLogger;
@@ -53,9 +54,12 @@ export class NodeServer {
 
     if (this.options.jsonBody) {
       this.express.use(
-        json(
-          this.options.requestLimit ? { limit: this.options.requestLimit } : {}
-        )
+        json({
+          ...(this.options.requestLimit
+            ? { limit: this.options.requestLimit }
+            : {}),
+          strict: !this.options.jsonNoStrict,
+        })
       );
     }
     if (this.options.urlEncodedBody) {
