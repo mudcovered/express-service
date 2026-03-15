@@ -1,4 +1,5 @@
-import * as BodyParser from 'body-parser';
+import { json, text, urlencoded } from 'body-parser';
+
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { createServer, Server } from 'http';
 import { errorMiddleware } from './error-middleware';
@@ -52,14 +53,14 @@ export class NodeServer {
 
     if (this.options.jsonBody) {
       this.express.use(
-        BodyParser.json(
+        json(
           this.options.requestLimit ? { limit: this.options.requestLimit } : {}
         )
       );
     }
     if (this.options.urlEncodedBody) {
       this.express.use(
-        BodyParser.urlencoded({
+        urlencoded({
           extended: true,
           ...(this.options.requestLimit
             ? { limit: this.options.requestLimit }
@@ -69,7 +70,7 @@ export class NodeServer {
     }
     if (this.options.textBody) {
       this.express.use(
-        BodyParser.text({
+        text({
           ...(this.options.requestLimit
             ? { limit: this.options.requestLimit }
             : {}),
